@@ -9,32 +9,30 @@ def main():
     #pop_group = PopulationGroup()
 
 # sort population groups by category
-    population.sort(key=by_category)
-# do create_count_based_report
-    create_count_based_report(population, overall_total, 'Age Group')
+    population.sort(key=lambda x: x.category)
+# do create_count_based_report\
 # do create_percentage_based_report
-    create_percentage_based_report(population, overall_total, 'Age Group')
+    create_percentage_based_report(population, 'Age Group', male_total, female_total, overall_total)
 
 # sort population groups by total_count descending
-    population.sort(key=by_totals, reverse=True)
+    population.sort(key=lambda x: x.total_count, reverse=True)
 # do create_count_based_report
-    create_count_based_report(population, overall_total, 'Descending Total Count')
 # do create_percentage_based_report
-    create_percentage_based_report(population, overall_total, 'Descending Total Count')
+    create_percentage_based_report(population, 'Descending Age Group', male_total, female_total, overall_total)
 
 # sort population groups by female_count descending
-    population.sort(key=by_females, reverse=True)
+    #population.sort(key=by_females, reverse=True)
 # do create_count_based_report
-    create_count_based_report(population, overall_total, 'Descending Female Count')
 # do create_percentage_based_report
-    create_percentage_based_report(population, overall_total, 'Descending Female Count')
+    population.sort(key=lambda x: x.female_count, reverse=True)
+    create_percentage_based_report(population, 'Descending Female Count', male_total, female_total, overall_total)
 
 # sort population groups by male_count descending
-    population.sort(key=by_males, reverse=True)
+    #population.sort(key=by_males, reverse=True)
 # do create_count_based_report
-    create_count_based_report(population, overall_total, 'Descending Male Count')
 # do create_percentage_based_report
-    create_percentage_based_report(population, overall_total, 'Descending Male Count')
+    population.sort(key=lambda x: x.male_count, reverse=True)
+    create_percentage_based_report(population, 'Descending Male Count', male_total, female_total, overall_total)
 
 
 def build_population_group_list():
@@ -78,7 +76,7 @@ def calculate_column_totals(population_groups_list):
     return male_total, female_total, overall_total
 
 
-def create_count_based_report(population_groups_list, population_group_totals, title):
+def create_count_based_report(population_groups_list, title, male_total, female_total, overall_total):
 # receive population_groups_list, male_total, female_total, overall_total, title as parameters
 # print blank lines
     print()
@@ -89,28 +87,32 @@ def create_count_based_report(population_groups_list, population_group_totals, t
 'Age Group', 'Males', 'Females', 'Total'))
 
     for group in population_groups_list:
-        print(str(group))
-        print(str(population_group_totals))
+        print(group.category, group.male_count, group.female_count, group.total_count)
+        #print(str(population_group_totals))
+    print("Total", male_total, female_total, overall_total)
 
 
-def create_percentage_based_report(population_groups_list, population_group_totals, title):
+def create_percentage_based_report(population_groups_list, title, male_total, female_total, overall_total):
 # print blank lines
     print()
 # print title
-    print('\n{0:^40}'.format('Percentages by ' + title))
+    print('\n{0:^40}'.format('Counts by ' + title))
 # print column headings
     print('\n{0:<10}{1:>10}{2:>10}{3:>10}'.format(
 'Age Group', 'Males', 'Females', 'Total'))
 
     for group in population_groups_list:
 # male percentage variable
-        male_percentage = (group.male_count / population_group_totals.male_count)
-# female percentage variable
-        female_percentage = (group.female_count / population_group_totals.female_count)
 # total percentage variable
-        total_percentage = (group.calculate_total_count() / population_group_totals.calculate_total_count())
-        print('{0:<10}{1:>10.2%}{2:>10.2%}{3:>10.2%}'.format(group.category, male_percentage, female_percentage, total_percentage))
-        print('{0:<10}{1:>10.2%}{2:>10.2%}{3:>10.2%}'.format('Total', 1, 1, 1))
+        total_percentage = 0
+        if title == "Age Group" or title == "Descending Age Group":
+            total_percentage = (int(group.total_count) / overall_total)
+        elif title == "Descending Male Count":
+            total_percentage = (int(group.male_count) / overall_total)
+        elif title == "Descending Female Count":
+            total_percentage = (int(group.female_count) / overall_total)
+        print(group.category, group.male_count, group.female_count, "{0:.2%}".format(total_percentage))
+    print("Total", male_total, female_total, "100%")
 
 
 def by_category(pg):

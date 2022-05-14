@@ -1,13 +1,15 @@
 #file my_population_groups.py
 #program conducts unit test using the populationgroup class
 
+totalCount = 0
+
 class PopulationGroup:
+
     def __init__(self, category, male, female, total):
         self.category=category
         self.male_count=male
         self.female_count=female
-        self.total_count=total
-
+        self.total_count=male + female
     #calculate percentage with total
     def calculate_category_percent(self,grand_total):
         return (self.total_count/grand_total)*100
